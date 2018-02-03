@@ -50,7 +50,20 @@ setlocal suffixesadd=.vue
 " and valid variable names.
 setlocal iskeyword+=#,-
 
-setlocal omnifunc=stylcomplete#CompleteStyl
+function! s:setCompeteFunc()
+  if searchpair('<script', '', '</script>', 'bnW')
+    setlocal omnifunc=javascriptcomplete#CompleteJS
+  elseif searchpair('<style', '', '</style>', 'bnW')
+    setlocal omnifunc=stylcomplete#CompleteStyl
+  elseif searchpair('<template', '', '</template>', 'bnW')
+    setlocal omnifunc=pugcomplete#CompletePug
+  endif
+endfunction
+
+augroup vueBinds
+  au!
+  au CursorMoved,CursorMovedI *.vue call s:setCompeteFunc()
+augroup END
 
 let b:undo_ftplugin = "setl cms< com< "
       \ " | unlet! b:browsefilter b:match_words | " . s:undo_ftplugin
